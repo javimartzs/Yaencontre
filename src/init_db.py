@@ -35,22 +35,23 @@ def create_database():
         cursor = conn.cursor()
 
         table_query = '''
-            CREATE TABLE IF NOT EXISTS information (
+            CREATE TABLE information (
                 
                 id VARCHAR(100), 
-                reference VARCHAR(50),
+                reference VARCHAR(100),
                 title TEXT,
                 description TEXT,
-                operation VARCHAR(50),
-                family VARCHAR(50),
-                owner_type VARCHAR(50),
-                owner_id VARCHAR(50), 
-                owner_name VARCHAR(100), 
+                operation VARCHAR(100),
+                family VARCHAR(100),
+                owner_type VARCHAR(100),
+                owner_id VARCHAR(100),
+                owner_name TEXT, 
                 price numeric,
                 size numeric, 
                 rooms numeric, 
                 bathrooms numeric, 
                 new VARCHAR(10), 
+                address TEXT, 
                 latitude numeric, 
                 longitude numeric,
                 city VARCHAR(50)
