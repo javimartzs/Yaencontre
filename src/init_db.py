@@ -1,18 +1,37 @@
 import psycopg2
+from dotenv import load_dotenv
+import os
 
-def create_database():
 
+def environment_vars():
+    load_dotenv()
+    username = os.getenv('USERNAME')
+    password = os.getenv('PASSWORD')
+    host = os.getenv('HOST')
+    port = os.getenv('PORT')
+    database = os.getenv('DATABASE')
+    
+    return username, password, host, port, database, 
+
+
+
+def create_database_and_tables():
+
+    # Import environments variables
+    username, password, host, port, database = environment_vars()
+
+    # Create Postgres Database
     try:
         conn = psycopg2.connect(
-            user = 'postgres', 
-            password = 'gagll1i1',
-            host = 'localhost', 
-            port = '5432'
+            user = username, 
+            password = password,
+            host = host, 
+            port = port
         )
         conn.autocommit = True
         cursor = conn.cursor()
 
-        db_query = 'CREATE DATABASE yaencontre;'
+        db_query = f'CREATE DATABASE {database};'
         cursor.execute(db_query)
 
         cursor.close()
@@ -21,22 +40,23 @@ def create_database():
 
     except Exception as e:
         print('Error al crear la base de datos:', e)
+    
 
-
+    # Create two tables in Postgres Database
     try:
         conn = psycopg2.connect(
-            user = 'postgres',
-            password = 'gagll1i1', 
-            host = 'localhost', 
-            port = '5432', 
-            database = 'yaencontre'
+            user = username, 
+            password = password,
+            host = host, 
+            port = port,
+            database = database
         )
+
         conn.autocommit = True
         cursor = conn.cursor()
 
         table_query = '''
-            CREATE TABLE information (
-                
+            CREATE TABLE extraction (
                 id VARCHAR(100), 
                 reference VARCHAR(100),
                 title TEXT,
@@ -54,11 +74,11 @@ def create_database():
                 address TEXT, 
                 latitude numeric, 
                 longitude numeric,
-                city VARCHAR(50)
+                location VARCHAR(100)
             )
         '''
         cursor.execute(table_query)
-        print('Tabla creada existosamente')
+        print('Tabla de informacion creada existosamente')
 
         cursor.close()
         conn.close()
