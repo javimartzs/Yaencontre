@@ -56,8 +56,8 @@ def create_database_and_tables():
 
         table_query = '''
             CREATE TABLE extraction (
-                id VARCHAR(100), 
-                reference VARCHAR(100),
+                time VARCHAR(20),
+                reference VARCHAR(50),
                 title TEXT,
                 description TEXT,
                 operation VARCHAR(100),

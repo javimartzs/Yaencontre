@@ -1,5 +1,6 @@
-from selenium import webdriver
 from init_db import environment_vars
+from datetime import datetime
+from selenium import webdriver
 import requests
 import psycopg2
 
@@ -25,6 +26,7 @@ cities = [
     'rincon-de-la-victoria', 'granadilla-de-abona', 'san-bartolome-de-tirajana', 'linea-de-la-concepcion-la', 'alicante-alacant', 
     'san-vicente-del-raspeig-sant-vicent-del-raspeig', 'cerdanyola-del-valles'
 ]
+
 
 
 # Init connection function
@@ -64,6 +66,10 @@ def get_cookies(url):
 # Extract and load data function
 def fetch_data_for_city(cursor, cities):
 
+    # Extraction date
+    time_extract = datetime.now().strftime("%Y%m%d")
+
+
     for city in cities:
         # Obtencion de las cookies 
         url = f'https://www.yaencontre.com/alquiler/pisos/{city}'
@@ -89,7 +95,6 @@ def fetch_data_for_city(cursor, cities):
 
             for item in items:
                 build = item['realEstate']
-                id_ = build.get('id', None)
                 reference = build.get('reference', None)
                 title = build.get('title', None)
                 description = build.get('description', None)
@@ -106,19 +111,20 @@ def fetch_data_for_city(cursor, cities):
                 address = build['address'].get('qualifiedName', None)
                 latitude = build['address']['geoLocation']['lat']
                 longitude = build['address']['geoLocation']['lon']
+            
 
                 cursor.execute(
                     '''
-                        INSERT INTO extraction (
-                            id, reference, title, description, operation, family, owner_type, owner_id, owner_name, 
-                            price, size, rooms, bathrooms, new, address, latitude, longitude, location
-                            )
-                        VALUES (
-                            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                            )
+                    INSERT INTO extraction (
+                        reference, title, description, operation, family, owner_type, owner_id, owner_name, 
+                        price, size, rooms, bathrooms, new, address, latitude, longitude, location, time
+                        )
+                    VALUES (
+                        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                        )
                     ''', (
-                        id_, reference, title, description, operation, family, owner_type, owner_id, owner_name, 
-                        price, size, rooms, bathrooms, new, address, latitude, longitude, location
+                        reference, title, description, operation, family, owner_type, owner_id, owner_name, 
+                        price, size, rooms, bathrooms, new, address, latitude, longitude, location, time_extract
                         )
                 )
             
