@@ -23,8 +23,9 @@ cities = [
     'sant-boi-de-llobregat', 'talavera-de-la-reina', 'alcala-de-guadaira', 'santa-lucia-de-tirajana', 'sanlucar-de-barrameda', 
     'prat-de-llobregat-el', 'colmenar-viejo', 'arganda-del-rey', 'boadilla-del-monte', 'collado-villalba', 'mollet-del-valles', 
     'rincon-de-la-victoria', 'granadilla-de-abona', 'san-bartolome-de-tirajana', 'linea-de-la-concepcion-la', 'alicante-alacant', 
-    'san-vicente-del-raspeig-sant-vicent-del-raspeig', 'sardanola-del-valles', 
+    'san-vicente-del-raspeig-sant-vicent-del-raspeig', 'cerdanyola-del-valles'
 ]
+
 
 # Init connection function
 def init_connection():
@@ -64,7 +65,6 @@ def get_cookies(url):
 def fetch_data_for_city(cursor, cities):
 
     for city in cities:
-
         # Obtencion de las cookies 
         url = f'https://www.yaencontre.com/alquiler/pisos/{city}'
         s = get_cookies(url)
@@ -124,8 +124,6 @@ def fetch_data_for_city(cursor, cities):
             
             print(f'Pagina {i} de {pages} añadida')
         print(f"Datos de {city} insertados exitosamente en la base de datos.")
-
-        
 
 
 # Run functions 

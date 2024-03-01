@@ -1,5 +1,5 @@
-import psycopg2
 from dotenv import load_dotenv
+import psycopg2
 import os
 
 
@@ -11,12 +11,11 @@ def environment_vars():
     port = os.getenv('PORT')
     database = os.getenv('DATABASE')
     
-    return username, password, host, port, database, 
+    return username, password, host, port, database
 
 
 
 def create_database_and_tables():
-
     # Import environments variables
     username, password, host, port, database = environment_vars()
 
