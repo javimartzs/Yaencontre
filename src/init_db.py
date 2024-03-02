@@ -1,6 +1,5 @@
 from dotenv import dotenv_values
 import psycopg2
-import os
 
 
 def environment_vars():

@@ -120,10 +120,10 @@ def fetch_data_for_city(cursor, cities):
                     INSERT INTO extraction (
                         reference, title, description, operation, family, owner_type, owner_id, owner_name, 
                         price, size, rooms, bathrooms, new, address, latitude, longitude, location, time
-                        )
+                    )
                     VALUES (
                         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                        )
+                    )
                     ''', (
                         reference, title, description, operation, family, owner_type, owner_id, owner_name, 
                         price, size, rooms, bathrooms, new, address, latitude, longitude, location, time_extract
