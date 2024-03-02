@@ -1,18 +1,19 @@
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 import psycopg2
 import os
 
 
 def environment_vars():
-    load_dotenv()
-    username = os.getenv('USERNAME')
-    password = os.getenv('PASSWORD')
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    database = os.getenv('DATABASE')
-    
-    return username, password, host, port, database
 
+    env = dotenv_values('.env')
+
+    username = env.get('USERNAME')
+    password = env.get('PASSWORD')
+    host = env.get('HOST')
+    port = env.get('PORT')
+    database = env.get('DATABASE')
+
+    return username, password, host, port, database
 
 
 def create_database_and_tables():
@@ -22,9 +23,9 @@ def create_database_and_tables():
     # Create Postgres Database
     try:
         conn = psycopg2.connect(
-            user = username, 
+            user = username,
             password = password,
-            host = host, 
+            host = host,
             port = port
         )
         conn.autocommit = True
@@ -39,14 +40,14 @@ def create_database_and_tables():
 
     except Exception as e:
         print('Error al crear la base de datos:', e)
-    
+
 
     # Create two tables in Postgres Database
     try:
         conn = psycopg2.connect(
-            user = username, 
+            user = username,
             password = password,
-            host = host, 
+            host = host,
             port = port,
             database = database
         )
@@ -55,7 +56,7 @@ def create_database_and_tables():
         cursor = conn.cursor()
 
         table_query = '''
-            CREATE TABLE extraction (
+            CREATE TABLE IF NOT EXISTS extraction (
                 time VARCHAR(20),
                 reference VARCHAR(50),
                 title TEXT,
@@ -64,20 +65,20 @@ def create_database_and_tables():
                 family VARCHAR(100),
                 owner_type VARCHAR(100),
                 owner_id VARCHAR(100),
-                owner_name TEXT, 
+                owner_name TEXT,
                 price numeric,
-                size numeric, 
-                rooms numeric, 
-                bathrooms numeric, 
-                new VARCHAR(10), 
-                address TEXT, 
-                latitude numeric, 
+                size numeric,
+                rooms numeric,
+                bathrooms numeric,
+                new VARCHAR(10),
+                address TEXT,
+                latitude numeric,
                 longitude numeric,
                 location VARCHAR(100)
             )
         '''
         cursor.execute(table_query)
-        print('Tabla de informacion creada existosamente')
+        print('Tabla de extraction creada existosamente')
 
         cursor.close()
         conn.close()

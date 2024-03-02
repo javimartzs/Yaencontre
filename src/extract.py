@@ -78,6 +78,8 @@ def fetch_data_for_city(cursor, cities):
         # Obtencion de los municipios dentro de cada provincia
         api = f'https://api.yaencontre.com/v3/search?family=FLAT&lang=es&location={city}&operation=RENT&pageSize=42'
         response = s.get(api)
+        content_length = int(response.headers.get('Content-Length', 0))
+        print("Tamaño de la respuesta:", content_length, "bytes")
         data = response.json()
 
         # Obtencion del numero de paginas por provincia
