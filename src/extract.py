@@ -68,8 +68,9 @@ def fetch_data_for_city(cursor, cities):
 
 
     for city in cities:
+        
+        # Init loop city problems
         while True:
-            
             url = f'https://www.yaencontre.com/alquiler/pisos/{city}'
             s = get_cookies(url)
 
@@ -84,11 +85,13 @@ def fetch_data_for_city(cursor, cities):
 
             else:
                 print(f'No se encontraron resultados en {city}. Reintentando...')
-                sleep(3)
+                sleep(30)
                 continue
 
         for i in range(1, pages+1):
-
+            retries_per_page = 0
+            
+            # Init loop pages problems
             while True:
                 api_pages = f'{api}&pageNumber={i}'
                 response = s.get(api_pages)
@@ -100,11 +103,15 @@ def fetch_data_for_city(cursor, cities):
                     break
                 else:
                     print(f'No se encontraron resultados en {city}--{i}. Reintentando...')
-                    sleep(3)
+                    retries_per_page += 1
+                    if retries_per_page >= 3:  # Si se superan 3 reintentos, pasar a la siguiente página
+                        print(f'Excedido el número máximo de reintentos para {city} // {i}. Pasando a la siguiente página.')
+                        break
+                    sleep(30)
                     s = get_cookies(url)
-                    continue
-                
-
+                    continue                
+             
+            # Extract page information
             for item in items:
                 build = item['realEstate']
                 reference = build.get('reference', None)
@@ -124,7 +131,7 @@ def fetch_data_for_city(cursor, cities):
                 latitude = build['address']['geoLocation']['lat']
                 longitude = build['address']['geoLocation']['lon']
             
-
+                # Insert information in postgres db
                 cursor.execute(
                     '''
                     INSERT INTO extraction (
@@ -141,7 +148,7 @@ def fetch_data_for_city(cursor, cities):
                 )
             
             print(f'Pagina {i} de {pages} añadida')
-        print(f"Datos de {city} insertados en la base de datos.")
+        print(f"Datos de {city} insertados en la base de datos")
         sleep(3)
 
 # Run functions 
