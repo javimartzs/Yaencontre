@@ -1,6 +1,7 @@
 from init_db import environment_vars
 from datetime import datetime
 from selenium import webdriver
+from time import sleep
 import requests
 import psycopg2
 
@@ -29,9 +30,7 @@ cities = [
 
 
 
-# Init connection function
 def init_connection():
-
     username, password, host, port, database = environment_vars()
 
     conn = psycopg2.connect(
@@ -45,13 +44,11 @@ def init_connection():
     cursor = conn.cursor()
     return conn, cursor
 
-# Close connection function
 def close_connection(conn, cursor):
     cursor.close()
     conn.close()
 
 
-# Get cookies function
 def get_cookies(url):
     driver = webdriver.Chrome()
     driver.get(url)
@@ -67,33 +64,46 @@ def get_cookies(url):
 def fetch_data_for_city(cursor, cities):
 
     # Extraction date
-    time_extract = datetime.now().strftime("%Y%m%d")
+    time_extract = datetime.now().strftime("%Y%m%d %H")
 
 
     for city in cities:
-        # Obtencion de las cookies 
-        url = f'https://www.yaencontre.com/alquiler/pisos/{city}'
-        s = get_cookies(url)
+        while True:
+            
+            url = f'https://www.yaencontre.com/alquiler/pisos/{city}'
+            s = get_cookies(url)
 
-        # Obtencion de los municipios dentro de cada provincia
-        api = f'https://api.yaencontre.com/v3/search?family=FLAT&lang=es&location={city}&operation=RENT&pageSize=42'
-        response = s.get(api)
-        content_length = int(response.headers.get('Content-Length', 0))
-        print("Tamaño de la respuesta:", content_length, "bytes")
-        data = response.json()
-
-        # Obtencion del numero de paginas por provincia
-        pages = data['result']['numPages']
-        print(f'La ciudad de {city} tiene {pages} páginas')
-
-        # Obtencion de la informacion de precios pagina a pagina por provincia
-        for i in range(1, pages+1):
-            api = f'https://api.yaencontre.com/v3/search?family=FLAT&lang=es&location={city}&operation=RENT&pageSize=42&pageNumber={i}'
+            api = f'https://api.yaencontre.com/v3/search?family=FLAT&lang=es&location={city}&operation=RENT&pageSize=42'
             response = s.get(api)
             data = response.json()
 
-            location = data['result']['location']
-            items = data['result']['items']
+            if 'result' in data:
+                pages = data['result']['numPages']
+                print(f'{city} tiene {pages} paginas')
+                break
+
+            else:
+                print(f'No se encontraron resultados en {city}. Reintentando...')
+                sleep(3)
+                continue
+
+        for i in range(1, pages+1):
+
+            while True:
+                api_pages = f'{api}&pageNumber={i}'
+                response = s.get(api_pages)
+                data = response.json()
+
+                if 'result' in data:
+                    location = data['result']['location']
+                    items = data['result']['items']
+                    break
+                else:
+                    print(f'No se encontraron resultados en {city}--{i}. Reintentando...')
+                    sleep(3)
+                    s = get_cookies(url)
+                    continue
+                
 
             for item in items:
                 build = item['realEstate']
@@ -131,8 +141,8 @@ def fetch_data_for_city(cursor, cities):
                 )
             
             print(f'Pagina {i} de {pages} añadida')
-        print(f"Datos de {city} insertados exitosamente en la base de datos.")
-
+        print(f"Datos de {city} insertados en la base de datos.")
+        sleep(3)
 
 # Run functions 
 def fetch_and_insert_data():
