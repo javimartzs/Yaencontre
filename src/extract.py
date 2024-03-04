@@ -1,4 +1,5 @@
 from init_db import environment_vars
+import pandas as pd
 from datetime import datetime
 from selenium import webdriver
 from time import sleep
@@ -27,7 +28,6 @@ cities = [
     'rincon-de-la-victoria', 'granadilla-de-abona', 'san-bartolome-de-tirajana', 'linea-de-la-concepcion-la', 'alicante-alacant', 
     'san-vicente-del-raspeig-sant-vicent-del-raspeig', 'cerdanyola-del-valles'
 ]
-
 
 
 def init_connection():
@@ -65,10 +65,10 @@ def fetch_data_for_city(cursor, cities):
 
     # Extraction date
     time_extract = datetime.now().strftime("%Y%m%d %H")
-
+    city_data = []
 
     for city in cities:
-        
+
         # Init loop city problems
         while True:
             url = f'https://www.yaencontre.com/alquiler/pisos/{city}'
@@ -132,21 +132,30 @@ def fetch_data_for_city(cursor, cities):
                 longitude = build['address']['geoLocation']['lon']
             
                 # Insert information in postgres db
-                cursor.execute(
-                    '''
-                    INSERT INTO extraction (
-                        reference, title, description, operation, family, owner_type, owner_id, owner_name, 
-                        price, size, rooms, bathrooms, new, address, latitude, longitude, location, time
-                    )
-                    VALUES (
-                        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-                    )
-                    ''', (
-                        reference, title, description, operation, family, owner_type, owner_id, owner_name, 
-                        price, size, rooms, bathrooms, new, address, latitude, longitude, location, time_extract
-                        )
-                )
+                city_data.append({
+                    'reference': reference,
+                    'title': title,
+                    'description': description,
+                    'operation': operation,
+                    'family': family,
+                    'owner_type': owner_type,
+                    'owner_id': owner_id,
+                    'owner_name': owner_name,
+                    'price': price,
+                    'size': size,
+                    'rooms': rooms,
+                    'bathrooms': bathrooms,
+                    'new': new,
+                    'address': address,
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'location': location,
+                    'time': time_extract
+                })
             
+        
+            df = pd.DataFrame(city_data)
+            df.to_parquet('extraccion.parquet', engine='fastparquet')
             print(f'Pagina {i} de {pages} añadida')
         print(f"Datos de {city} insertados en la base de datos")
         sleep(3)
