@@ -3,9 +3,11 @@ from extract import fetch_and_insert_data
 import time
 
 if __name__ == "__main__":
-    start_time = time.time() 
-    create_database_and_table()
-    fetch_and_insert_data()
-    drop_database_and_table()
-    end_time = time.time()  
+
+    start_time = time.time()        # Iniciar temporizador
+    create_database_and_table()     # Crear base de datos y tabla
+    fetch_and_insert_data()         # Extraer datos y almacenar en parquet
+    drop_database_and_table()       # Eliminar base de datos y tabla
+    end_time = time.time()          # Finalizar temporizador
+
     print(f'Tiempo transcurrido: {(end_time - start_time)/60} minutos')
