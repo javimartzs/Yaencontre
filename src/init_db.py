@@ -15,7 +15,7 @@ def environment_vars():
     return username, password, host, port, database
 
 
-def create_database_and_tables():
+def create_database_and_table():
     # Import environments variables
     username, password, host, port, database = environment_vars()
 
@@ -84,3 +84,29 @@ def create_database_and_tables():
 
     except Exception as e:
         print('Error al crear la tabla:', e)
+
+
+
+def drop_database_and_table():
+
+    username, password, host, port, database = environment_vars()
+
+    try:
+        conn = psycopg2.connect(
+            user = username,
+            password = password, 
+            host = host, 
+            port = port
+        )
+
+        conn.autocommit = True
+        cursor = conn.cursor()
+
+        cursor.execute(f"DROP DATABASE {database}")
+
+        cursor.close()
+        conn.close()
+        print('Base de datos eliminada correctamente')
+
+    except Exception as e:
+        print(f'Error al eliminar la database: {e}')

@@ -1,13 +1,15 @@
 from init_db import environment_vars
+from sqlalchemy import create_engine
 from datetime import datetime
 from selenium import webdriver
+import pandas as pd
 from time import sleep
 import requests
 import psycopg2
 
 
 # Target cities
-cities = [
+cities_w = [
     'madrid', 'barcelona', 'valencia', 'sevilla', 'malaga', 'murcia', 'coruna-a', 'palma-de-mallorca', 'palmas-de-gran-canaria-las', 
     'bilbao', 'cordoba', 'valladolid', 'vigo', 'gijon', 'hospitalet-de-llobregat-l', 'vitoria-gasteiz', 'elche-elx', 'granada', 
     'terrassa','badalona', 'cartagena', 'sabadell', 'oviedo', 'jerez-de-la-frontera', 'mostoles', 'pamplona-iruna', 'santa-cruz-de-tenerife', 
@@ -28,6 +30,7 @@ cities = [
     'san-vicente-del-raspeig-sant-vicent-del-raspeig', 'cerdanyola-del-valles'
 ]
 
+cities = ['coruna-a', 'bilbao']
 
 
 def init_connection():
@@ -47,6 +50,7 @@ def init_connection():
 def close_connection(conn, cursor):
     cursor.close()
     conn.close()
+    print('Conexion cerrada')
 
 
 def get_cookies(url):
@@ -62,9 +66,8 @@ def get_cookies(url):
 
 # Extract and load data function
 def fetch_data_for_city(cursor, cities):
-
     # Extraction date
-    time_extract = datetime.now().strftime("%Y%m%d %H")
+    time_extract = datetime.now().strftime("%Y%m%d")
 
 
     for city in cities:
@@ -150,10 +153,21 @@ def fetch_data_for_city(cursor, cities):
             print(f'Pagina {i} de {pages} añadida')
         print(f"Datos de {city} insertados en la base de datos")
         sleep(3)
+    
+    return time_extract
+
+
+
+def export_to_parquet(conn, time_extract):
+    df = pd.read_sql_query(f"SELECT * FROM extraction", conn)
+
+    df.to_parquet(f'data/extraction_{time_extract}.parquet')
+    print(f"Tabla exportada como extraction_{time_extract} en formato Parquet.")
+
 
 # Run functions 
 def fetch_and_insert_data():
     conn, cursor = init_connection()
-    fetch_data_for_city(cursor, cities)
+    time_extract = fetch_data_for_city(cursor, cities)
+    export_to_parquet(conn, time_extract)
     close_connection(conn, cursor)
-    print('Descarga terminada')
