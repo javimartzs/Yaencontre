@@ -9,7 +9,7 @@ import psycopg2
 
 
 # Target cities
-cities_w = [
+cities = [
     'madrid', 'barcelona', 'valencia', 'sevilla', 'malaga', 'murcia', 'coruna-a', 'palma-de-mallorca', 'palmas-de-gran-canaria-las', 
     'bilbao', 'cordoba', 'valladolid', 'vigo', 'gijon', 'hospitalet-de-llobregat-l', 'vitoria-gasteiz', 'elche-elx', 'granada', 
     'terrassa','badalona', 'cartagena', 'sabadell', 'oviedo', 'jerez-de-la-frontera', 'mostoles', 'pamplona-iruna', 'santa-cruz-de-tenerife', 
@@ -30,7 +30,6 @@ cities_w = [
     'san-vicente-del-raspeig-sant-vicent-del-raspeig', 'cerdanyola-del-valles'
 ]
 
-cities = ['coruna-a', 'bilbao']
 
 
 def init_connection():
