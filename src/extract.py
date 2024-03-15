@@ -70,7 +70,6 @@ def fetch_data_for_city(cursor, cities):
 
 
     for city in cities:
-        
         # Init loop city problems
         while True:
             url = f'https://www.yaencontre.com/alquiler/pisos/{city}'
@@ -84,7 +83,6 @@ def fetch_data_for_city(cursor, cities):
                 pages = data['result']['numPages']
                 print(f'{city} tiene {pages} paginas')
                 break
-
             else:
                 print(f'No se encontraron resultados en {city}. Reintentando...')
                 sleep(30)
@@ -106,7 +104,7 @@ def fetch_data_for_city(cursor, cities):
                 else:
                     print(f'No se encontraron resultados en {city}--{i}. Reintentando...')
                     retries_per_page += 1
-                    if retries_per_page >= 3:  # Si se superan 3 reintentos, pasar a la siguiente página
+                    if retries_per_page >= 5:  # Si se superan 3 reintentos, pasar a la siguiente página
                         print(f'Excedido el número máximo de reintentos para {city} // {i}. Pasando a la siguiente página.')
                         break
                     sleep(30)
