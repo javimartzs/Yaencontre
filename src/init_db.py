@@ -1,17 +1,19 @@
 from dotenv import dotenv_values
 import psycopg2
-
+import os
 
 def environment_vars():
 
-    env = dotenv_values('.env')
+    # Obtiene las variables de entorno
+    username = os.environ.get('USERNAME')
+    password = os.environ.get('PASSWORD')
+    host = os.environ.get('HOST')
+    port = os.environ.get('PORT')
+    database = os.environ.get('DATABASE')
 
-    username = env.get('USERNAME')
-    password = env.get('PASSWORD')
-    host = env.get('HOST')
-    port = env.get('PORT')
-    database = env.get('DATABASE')
 
+
+    print(username, password, host, port, database)
     return username, password, host, port, database
 
 

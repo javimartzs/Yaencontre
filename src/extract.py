@@ -1,5 +1,4 @@
 from init_db import environment_vars
-from sqlalchemy import create_engine
 from datetime import datetime
 from selenium import webdriver
 import pandas as pd
@@ -33,12 +32,13 @@ cities = [
 
 
 def init_connection():
+
     username, password, host, port, database = environment_vars()
 
     conn = psycopg2.connect(
-        user = username, 
+        user = username,
         password = password,
-        host = host, 
+        host = host,
         port = port,
         database = database
     )
@@ -104,7 +104,7 @@ def fetch_data_for_city(cursor, cities):
                 else:
                     print(f'No se encontraron resultados en {city}--{i}. Reintentando...')
                     retries_per_page += 1
-                    if retries_per_page >= 5:  # Si se superan 3 reintentos, pasar a la siguiente página
+                    if retries_per_page >= 10:  # Si se superan 3 reintentos, pasar a la siguiente página
                         print(f'Excedido el número máximo de reintentos para {city} // {i}. Pasando a la siguiente página.')
                         break
                     sleep(30)
@@ -156,9 +156,9 @@ def fetch_data_for_city(cursor, cities):
 
 
 def export_to_parquet(conn, time_extract):
-    df = pd.read_sql_query("SELECT * FROM extraction", conn)
+    df = pd.read_sql("SELECT * FROM extraction", conn)
 
-    df.to_parquet(f'data/extraction_{time_extract}.parquet')
+    df.to_parquet(f'/home/javi/Projects/Yaencontre/data/extraction_{time_extract}.parquet')
     print(f"Tabla exportada como extraction_{time_extract} en formato Parquet.")
 
 
