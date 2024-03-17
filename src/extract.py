@@ -147,7 +147,7 @@ def fetch_data_for_city(cursor, cities):
                         )
                 )
             
-            print(f'Pagina {i} de {pages} añadida')
+            #print(f'Pagina {i} de {pages} añadida')
         print(f"Datos de {city} insertados en la base de datos")
         sleep(3)
     
