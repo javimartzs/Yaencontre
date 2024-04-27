@@ -1,5 +1,3 @@
 *.csv
 .DS_Store
 __pycache__
-*.parquet
-*.log
