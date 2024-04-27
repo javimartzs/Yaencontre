@@ -9,3 +9,10 @@ set +a  # deja de exportar automáticamente
 
 python3 /home/javi/Projects/Yaencontre/src/main.py
 kill %1
+
+time=$(date +"%y-%m-%d")
+
+git add .
+git commit -m "Extraccion terminada a $time"
+
+git push
