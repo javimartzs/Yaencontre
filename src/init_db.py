@@ -11,8 +11,6 @@ def environment_vars():
     port = os.environ.get('PORT')
     database = os.environ.get('DATABASE')
 
-
-
     print(username, password, host, port, database)
     return username, password, host, port, database
 
