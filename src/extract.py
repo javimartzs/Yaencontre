@@ -158,7 +158,7 @@ def fetch_data_for_city(cursor, cities):
 def export_to_parquet(conn, time_extract):
     df = pd.read_sql("SELECT * FROM extraction", conn)
 
-    df.to_parquet(f'/home/javi/Projects/Yaencontre/data/extraction_{time_extract}.parquet')
+    df.to_parquet(f'/Users/javier.martinez32/Documents/Yaencontre/data/extraction_{time_extract}.parquet')
     print(f"Tabla exportada como extraction_{time_extract} en formato Parquet.")
 
 
