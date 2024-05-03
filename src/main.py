@@ -1,6 +1,7 @@
 from init_db import create_database_and_table, drop_database_and_table
 from extract import fetch_and_insert_data
 import time
+import psycopg2
 
 if __name__ == "__main__":
 
