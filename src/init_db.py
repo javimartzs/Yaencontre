@@ -4,11 +4,11 @@ import os
 def environment_vars():
 
     # Obtiene las variables de entorno
-    username = os.environ.get('USERNAME')
-    password = os.environ.get('PASSWORD')
-    host = os.environ.get('HOST')
-    port = os.environ.get('PORT')
-    database = os.environ.get('DATABASE')
+    username = 'postgres'
+    password = 'gagll1i1'
+    host = 'localhost'
+    port = '5432'
+    database = 'yaencontre'
 
     print(username, password, host, port, database)
     return username, password, host, port, database
