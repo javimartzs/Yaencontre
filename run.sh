@@ -8,11 +8,11 @@ export DISPLAY=:99
 
 # Cargar las variables de entorno
 set -a
-source /home/javi/Projects/Yaencontre/.env
+source /Users/javier.martinez32/Documents/Yaencontre/.env
 set +a
 
 # Ejecutar el script principal
-python3 /home/javi/Projects/Yaencontre/src/main.py
+python3 /Users/javier.martinez32/Documents/Yaencontre/src/main.py
 
 # Detener Xvfb
 kill %1
